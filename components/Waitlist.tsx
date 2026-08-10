@@ -2,7 +2,15 @@
 
 import { useState } from "react";
 
-export default function Waitlist() {
+export default function Waitlist({
+  eyebrow = "Early access",
+  heading = "The first 50 streamers get Parbeam free, for life.",
+  buttonLabel = "Join the pilot",
+}: {
+  eyebrow?: string;
+  heading?: string;
+  buttonLabel?: string;
+}) {
   const [done, setDone] = useState<{ role: string; email: string } | null>(null);
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -21,9 +29,9 @@ export default function Waitlist() {
       <div className="wrap">
         <div className="cta-band">
           <div className="eyebrow" style={{ marginBottom: 12 }}>
-            Early access
+            {eyebrow}
           </div>
-          <h2>The first 50 streamers get Parbeam free, for life.</h2>
+          <h2>{heading}</h2>
 
           {done ? (
             <p className="ok">
@@ -46,7 +54,7 @@ export default function Waitlist() {
                 <div className="frow">
                   <input type="email" name="email" placeholder="you@example.com" required aria-label="Email" />
                   <button className="btn lg" type="submit">
-                    Join the pilot
+                    {buttonLabel}
                   </button>
                 </div>
               </form>

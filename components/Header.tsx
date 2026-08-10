@@ -1,20 +1,40 @@
 import { Logo } from "./icons";
 
-export default function Header() {
+type NavLink = { href: string; label: string };
+
+const defaultLinks: NavLink[] = [
+  { href: "#donate", label: "Donating" },
+  { href: "#streamers", label: "For streamers" },
+  { href: "#faq", label: "FAQ" },
+];
+
+export default function Header({
+  links = defaultLinks,
+  ctaHref = "#access",
+  ctaLabel = "Get early access",
+  homeHref = "/",
+}: {
+  links?: NavLink[];
+  ctaHref?: string;
+  ctaLabel?: string;
+  homeHref?: string;
+}) {
   return (
     <header>
       <div className="wrap nav">
-        <a className="brand" href="#">
+        <a className="brand" href={homeHref}>
           <Logo />
           Parbeam
         </a>
         <nav className="links">
-          <a href="#donate">Donating</a>
-          <a href="#streamers">For streamers</a>
-          <a href="#faq">FAQ</a>
+          {links.map((l) => (
+            <a href={l.href} key={l.href}>
+              {l.label}
+            </a>
+          ))}
         </nav>
-        <a className="btn" href="#access">
-          Get early access
+        <a className="btn" href={ctaHref}>
+          {ctaLabel}
         </a>
       </div>
     </header>
