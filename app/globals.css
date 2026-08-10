@@ -1,0 +1,87 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cream: #faf6ee;
+  --color-surface: #ffffff;
+  --color-ink: #2a2418;
+  --color-muted: #6f6555;
+  --color-line: #e8e0d2;
+  --color-amber: #d97706;
+  --color-amber-deep: #b45309;
+  --color-amber-soft: #fdf0dd;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+}
+
+body {
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+/* Donation alert popping into the stream mock */
+@keyframes alert-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.92);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-2px) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Coin rolling across the beam into the mock */
+@keyframes coin-travel {
+  0% {
+    opacity: 0;
+    transform: translateX(0) rotate(0deg);
+  }
+  10% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(var(--coin-distance, 220px)) rotate(540deg);
+  }
+}
+
+@keyframes beam-glow {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.animate-alert-pop {
+  animation: alert-pop 0.45s cubic-bezier(0.22, 1.2, 0.36, 1) both;
+}
+
+.animate-coin-travel {
+  animation: coin-travel 1.6s cubic-bezier(0.3, 0, 0.7, 1) both;
+}
+
+.animate-beam-glow {
+  animation: beam-glow 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-alert-pop,
+  .animate-coin-travel,
+  .animate-beam-glow {
+    animation: none;
+  }
+  .animate-coin-travel {
+    opacity: 0;
+  }
+}
