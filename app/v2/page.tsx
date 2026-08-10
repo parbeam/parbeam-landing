@@ -33,7 +33,7 @@ export default function V2() {
           buttonLabel="Join Early Access"
         />
       </main>
-      <Footer switchTo={{ href: "/", label: "View v1" }} />
+      <Footer variants={[{ href: "/", label: "v1" }, { href: "/v3", label: "v3" }]} />
     </>
   );
 }

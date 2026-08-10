@@ -1,6 +1,8 @@
 import { Logo } from "./icons";
 
-export default function Footer({ switchTo }: { switchTo?: { href: string; label: string } }) {
+type Link = { href: string; label: string };
+
+export default function Footer({ variants }: { variants?: Link[] }) {
   return (
     <footer>
       <div className="wrap foot-grid">
@@ -14,9 +16,12 @@ export default function Footer({ switchTo }: { switchTo?: { href: string; label:
           </span>
         </div>
         <div className="r">
-          {switchTo && <a href={switchTo.href}>{switchTo.label}</a>}
+          {variants?.map((v) => (
+            <a href={v.href} key={v.href}>
+              {v.label}
+            </a>
+          ))}
           <a href="mailto:hello@parbeam.xyz">hello@parbeam.xyz</a>
-          <a href="#faq">FAQ</a>
         </div>
       </div>
     </footer>
