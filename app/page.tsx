@@ -19,7 +19,7 @@ export default function Home() {
         <Faq />
         <Waitlist />
       </main>
-      <Footer />
+      <Footer switchTo={{ href: "/v2", label: "View v2" }} />
     </>
   );
 }
