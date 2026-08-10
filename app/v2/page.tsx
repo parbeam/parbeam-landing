@@ -33,7 +33,7 @@ export default function V2() {
           buttonLabel="Join Early Access"
         />
       </main>
-      <Footer variants={[{ href: "/", label: "v1" }, { href: "/v3", label: "v3" }]} />
+      <Footer variants={[{ href: "/", label: "home" }, { href: "/v1", label: "v1" }]} />
     </>
   );
 }
