@@ -15,6 +15,10 @@ const nextConfig = {
             key: "Content-Type",
             value: "text/plain",
           },
+          {
+            key: "Content-Encoding",
+            value: "gzip",
+          },
         ],
       },
     ];
