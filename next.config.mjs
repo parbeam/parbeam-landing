@@ -13,7 +13,7 @@ const nextConfig = {
           },
           {
             key: "Content-Type",
-            value: "text/plain; charset=utf-8",
+            value: "text/plain",
           },
         ],
       },
