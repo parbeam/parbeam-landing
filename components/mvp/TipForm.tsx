@@ -2,27 +2,11 @@
 
 import { useState } from "react";
 import type { Streamer } from "@/lib/registry";
+import { connectWallet, signTransactionXdr } from "@/lib/kit";
 
 type Stage = "idle" | "connecting" | "ready" | "signing" | "done" | "error";
 
 const EXPLORER_TX = (h: string) => `https://stellar.expert/explorer/testnet/tx/${h}`;
-
-// Kit is browser-only and initialised once.
-let kitReady: Promise<any> | null = null;
-async function ensureKit() {
-  if (!kitReady) {
-    kitReady = (async () => {
-      const kitMod = await import("@creit.tech/stellar-wallets-kit");
-      const utils = await import("@creit.tech/stellar-wallets-kit/modules/utils");
-      kitMod.StellarWalletsKit.init({
-        modules: utils.defaultModules(),
-        network: kitMod.Networks.TESTNET,
-      });
-      return { StellarWalletsKit: kitMod.StellarWalletsKit, Networks: kitMod.Networks };
-    })();
-  }
-  return kitReady;
-}
 
 export default function TipForm({ streamer }: { streamer: Streamer }) {
   const [stage, setStage] = useState<Stage>("idle");
@@ -36,9 +20,8 @@ export default function TipForm({ streamer }: { streamer: Streamer }) {
     setError("");
     setStage("connecting");
     try {
-      const { StellarWalletsKit } = await ensureKit();
-      const { address } = await StellarWalletsKit.authModal();
-      setAddress(address);
+      const addr = await connectWallet();
+      setAddress(addr);
       setStage("ready");
     } catch (e: any) {
       if (e?.message) setError(e.message);
@@ -72,12 +55,7 @@ export default function TipForm({ streamer }: { streamer: Streamer }) {
       if (memo) builder.addMemo(Memo.text(memo));
       const tx = builder.build();
 
-      const { StellarWalletsKit, Networks: KitNetworks } = await ensureKit();
-      const { signedTxXdr } = await StellarWalletsKit.signTransaction(tx.toXDR(), {
-        address,
-        networkPassphrase: KitNetworks.TESTNET,
-      });
-
+      const signedTxXdr = await signTransactionXdr(tx.toXDR(), address);
       const signed = TransactionBuilder.fromXDR(signedTxXdr, Networks.TESTNET);
       const res: any = await server.submitTransaction(signed as any);
       setTxHash(res.hash);
