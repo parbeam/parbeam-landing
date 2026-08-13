@@ -44,6 +44,14 @@ export async function getStreamer(slug: string): Promise<Streamer | undefined> {
   return rows[0] ? toStreamer(rows[0]) : undefined;
 }
 
+export async function listStreamers(limit = 60): Promise<Streamer[]> {
+  const rows = await query<Row>(
+    "select * from streamers order by created_at desc limit $1",
+    [limit]
+  );
+  return rows.map(toStreamer);
+}
+
 export async function slugTaken(slug: string): Promise<boolean> {
   const rows = await query("select 1 from streamers where slug = $1", [normalizeSlug(slug)]);
   return rows.length > 0;
