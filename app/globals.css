@@ -153,6 +153,43 @@ footer{border-top:1px solid var(--line);padding:44px 0}
 .foot-grid a:hover{color:var(--ink)}
 .foot-grid .r{display:flex;gap:22px}
 
+/* ---- MVP: tip page ---- */
+.tipwrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:32px 20px;
+  background:radial-gradient(70% 55% at 50% 0%,rgba(245,158,11,.10),transparent 70%),var(--bg)}
+.tipbrand{font-size:18px}
+.ambertext{color:var(--amber-ink)}
+.tipcard{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);
+  width:100%;max-width:420px;padding:32px}
+.tipcard h2{font-size:24px;font-weight:740;letter-spacing:-.02em;margin:6px 0 6px}
+.tipsub{color:var(--dim);font-size:15px;margin-bottom:18px}
+.fld{display:block;margin-top:14px}
+.fld span{display:block;font:600 12.5px/1 var(--mono);color:var(--mut);margin-bottom:7px;letter-spacing:.02em}
+.fld input{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:13px 15px;
+  color:var(--ink);font-size:16px}
+.fld input:focus{outline:none;border-color:var(--amber-ink)}
+.btn.full{width:100%;margin-top:20px;text-align:center}
+.linkbtn{display:block;margin:16px auto 0;background:none;border:none;color:var(--mut);font-size:14px;cursor:pointer}
+.linkbtn:hover{color:var(--ink)}
+.connected{margin-top:16px;font-size:13.5px;color:var(--dim)}
+.connected code{font-family:var(--mono);color:var(--ink)}
+.warn{margin-top:12px;color:#b3564f;font-size:13.5px;word-break:break-word}
+.tipnote{margin-top:16px;color:var(--mut);font-size:12.5px}
+.tipdone{width:52px;height:52px;border-radius:50%;background:var(--amber);color:#191713;font-size:26px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;margin-bottom:6px}
+
+/* ---- MVP: OBS overlay (transparent) ---- */
+.ov-root{position:fixed;top:24px;right:24px;display:flex;flex-direction:column;gap:12px;align-items:flex-end}
+.ov-alert{display:flex;align-items:center;gap:14px;background:rgba(16,16,19,.92);border:1px solid #2e2e36;
+  border-left:3px solid var(--amber);border-radius:12px;padding:14px 18px;min-width:280px;max-width:440px;
+  box-shadow:0 20px 50px -18px rgba(0,0,0,.7);animation:ovin .5s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes ovin{0%{transform:translateX(30px);opacity:0}100%{transform:none;opacity:1}}
+.ov-coin{width:40px;height:40px;border-radius:50%;flex-shrink:0;color:#fff;font-weight:800;font-size:18px;
+  display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#fcd34d,#f59e0b,#b45309)}
+.ov-line{color:#f2f0eb;font-size:15.5px}
+.ov-line b{font-weight:700}
+.ov-amt{font:650 15px var(--mono);color:var(--amber)}
+.ov-msg{color:#b7b5ae;font-size:13.5px;margin-top:3px}
+
 @media (max-width:960px){
   .nav .links{display:none}
 }
