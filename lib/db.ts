@@ -8,14 +8,26 @@ function needsSsl(url: string) {
   return !/localhost|127\.0\.0\.1/.test(url);
 }
 
+// node-postgres does not understand libpq's `channel_binding` param; drop it.
+function cleanUrl(url: string): string {
+  try {
+    const u = new URL(url);
+    u.searchParams.delete("channel_binding");
+    return u.toString();
+  } catch {
+    return url;
+  }
+}
+
 export function pool(): Pool {
-  if (!process.env.DATABASE_URL) {
+  const url = process.env.DATABASE_URL;
+  if (!url) {
     throw new Error("DATABASE_URL is not set");
   }
   if (!globalForPg.pgPool) {
     globalForPg.pgPool = new Pool({
-      connectionString: process.env.DATABASE_URL,
-      ssl: needsSsl(process.env.DATABASE_URL) ? { rejectUnauthorized: false } : undefined,
+      connectionString: cleanUrl(url),
+      ssl: needsSsl(url) ? { rejectUnauthorized: false } : undefined,
       max: 5,
     });
   }
