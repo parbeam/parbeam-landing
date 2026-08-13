@@ -3,7 +3,8 @@ import { headers } from "next/headers";
 import { getStreamer } from "@/lib/registry";
 import { recentTips, EXPLORER_TX, EXPLORER_ACCT, type Tip } from "@/lib/stellar";
 import { enrichTips } from "@/lib/intents";
-import { Logo } from "@/components/icons";
+import AppNav from "@/components/AppNav";
+import Footer from "@/components/Footer";
 import CopyField from "@/components/mvp/CopyField";
 
 export const dynamic = "force-dynamic";
@@ -29,22 +30,22 @@ export default async function Dashboard({ params }: { params: { slug: string } }
   const total = tips.reduce((sum, t) => sum + Number(t.amount), 0);
 
   return (
-    <div className="dashwrap">
-      <header className="dashhead">
-        <a className="brand" href="/">
-          <Logo />
-          Parbeam
-        </a>
+    <>
+      <AppNav cta={false} />
+      <div className="dashwrap">
+      <div className="dashtop">
+        <div>
+          <div className="eyebrow">Dashboard</div>
+          <h1 className="dashname">{streamer.displayName}</h1>
+        </div>
         <a className="btn" href={`/to/${streamer.slug}`} target="_blank" rel="noopener">
           Open tip page
         </a>
-      </header>
+      </div>
 
       <div className="dashgrid">
         <section className="dashcol">
-          <div className="eyebrow">Dashboard</div>
-          <h1 className="dashname">{streamer.displayName}</h1>
-          <p className="tipsub">
+          <p className="tipsub" style={{ marginTop: 0 }}>
             Wallet{" "}
             <a href={EXPLORER_ACCT(streamer.address)} target="_blank" rel="noopener">
               <code>{streamer.address.slice(0, 6)}…{streamer.address.slice(-6)}</code>
@@ -113,6 +114,8 @@ export default async function Dashboard({ params }: { params: { slug: string } }
           </div>
         </section>
       </div>
-    </div>
+      </div>
+      <Footer />
+    </>
   );
 }
