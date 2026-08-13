@@ -3,8 +3,8 @@ import { getStreamer } from "@/lib/registry";
 import TipForm from "@/components/mvp/TipForm";
 import { Logo } from "@/components/icons";
 
-export default function TipPage({ params }: { params: { slug: string } }) {
-  const streamer = getStreamer(params.slug);
+export default async function TipPage({ params }: { params: { slug: string } }) {
+  const streamer = await getStreamer(params.slug);
   if (!streamer) notFound();
 
   return (

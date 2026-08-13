@@ -5,7 +5,7 @@ import type { Tip } from "@/lib/stellar";
 
 type AlertItem = { key: string; from: string; amount: string; memo: string };
 
-export default function Overlay({ slug }: { slug: string }) {
+export default function Overlay({ slug, test = false }: { slug: string; test?: boolean }) {
   const [alerts, setAlerts] = useState<AlertItem[]>([]);
   const cursorRef = useRef<string | null>(null);
   const seen = useRef<Set<string>>(new Set());
@@ -14,6 +14,17 @@ export default function Overlay({ slug }: { slug: string }) {
     // OBS browser source wants a transparent page.
     document.body.style.background = "transparent";
     let stop = false;
+
+    if (test) {
+      const demo: AlertItem = {
+        key: "test-alert",
+        from: "GTEST0000000000000000000000000000000000000000000000TEST",
+        amount: "25",
+        memo: "test alert 🎉",
+      };
+      setAlerts([demo]);
+      setTimeout(() => setAlerts((a) => a.filter((x) => x.key !== demo.key)), 7000);
+    }
 
     async function tick() {
       try {
@@ -42,7 +53,7 @@ export default function Overlay({ slug }: { slug: string }) {
     return () => {
       stop = true;
     };
-  }, [slug]);
+  }, [slug, test]);
 
   return (
     <div className="ov-root">

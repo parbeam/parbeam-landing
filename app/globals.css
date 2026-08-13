@@ -177,6 +177,45 @@ footer{border-top:1px solid var(--line);padding:44px 0}
 .tipdone{width:52px;height:52px;border-radius:50%;background:var(--amber);color:#191713;font-size:26px;font-weight:800;
   display:flex;align-items:center;justify-content:center;margin-bottom:6px}
 
+.okmsg{margin-top:10px;color:var(--green);font-size:13.5px}
+.slugrow{display:flex;align-items:stretch;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--bg)}
+.slugrow:focus-within{border-color:var(--amber-ink)}
+.slugpre{display:flex;align-items:center;padding:0 4px 0 14px;font:500 14px var(--mono);color:var(--mut);white-space:nowrap}
+.slugrow input{flex:1;border:none;background:transparent;padding:13px 12px 13px 2px;color:var(--ink);font-size:16px}
+.slugrow input:focus{outline:none}
+
+/* ---- MVP: streamer dashboard ---- */
+.dashwrap{max-width:1000px;margin:0 auto;padding:0 24px 80px}
+.dashhead{display:flex;align-items:center;justify-content:space-between;height:70px;margin-bottom:14px}
+.dashgrid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+.dashcol{min-width:0}
+.dashname{font-size:30px;font-weight:750;letter-spacing:-.025em;margin:6px 0 4px}
+.dashlinks{margin-top:24px;display:flex;flex-direction:column;gap:16px}
+.copyfield .copylabel{display:block;font:600 12px var(--mono);color:var(--mut);letter-spacing:.03em;margin-bottom:7px}
+.copyrow{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 8px 8px 14px}
+.copyrow code{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:var(--mono);font-size:13.5px;color:var(--ink)}
+.copyrow button{flex-shrink:0;background:var(--ink);color:#fff;border:none;border-radius:8px;padding:8px 14px;font:600 13px var(--mono);cursor:pointer}
+.copyrow button:hover{filter:brightness(1.1)}
+.dashactions{margin-top:22px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.setuphelp{margin-top:28px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px}
+.setuphelp b{font-size:14.5px}
+.setuphelp ol{margin:10px 0 0 18px;color:var(--dim);font-size:14px;display:flex;flex-direction:column;gap:6px}
+.statsrow{display:flex;gap:14px;margin-bottom:26px}
+.statbox{flex:1;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:var(--shadow)}
+.statbox b{display:block;font:650 26px var(--mono);letter-spacing:-.02em}
+.statbox span{color:var(--mut);font-size:13px;margin-top:4px;display:block}
+.feedh{font-size:18px;font-weight:700;margin-bottom:14px}
+.feed{display:flex;flex-direction:column;gap:10px}
+.feedrow{display:flex;align-items:center;gap:13px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 15px;transition:border-color .15s}
+.feedrow:hover{border-color:#c9c4b8}
+.feedcoin{width:34px;height:34px;border-radius:50%;flex-shrink:0;color:#fff;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#fcd34d,#f59e0b,#b45309)}
+.feedmain{min-width:0;flex:1}
+.feedtop{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.feedtop b{font-size:14px}
+.feedamt{font:650 14px var(--mono);color:var(--amber-ink)}
+.feedmsg{color:var(--mut);font-size:13px;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media (max-width:820px){ .dashgrid{grid-template-columns:1fr;gap:32px} }
+
 /* ---- MVP: OBS overlay (transparent) ---- */
 .ov-root{position:fixed;top:24px;right:24px;display:flex;flex-direction:column;gap:12px;align-items:flex-end}
 .ov-alert{display:flex;align-items:center;gap:14px;background:rgba(16,16,19,.92);border:1px solid #2e2e36;
