@@ -1,28 +1,27 @@
 import { Logo } from "./icons";
 
-type Link = { href: string; label: string };
-
-export default function Footer({ variants }: { variants?: Link[] }) {
+export default function Footer() {
   return (
     <footer>
       <div className="wrap foot-grid">
         <div className="l" style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <Logo size={20} />
-          <span>
-            Parbeam, built on{" "}
-            <a href="https://stellar.org" rel="noopener" style={{ color: "var(--dim)" }}>
-              Stellar
-            </a>
-          </span>
+          <span>Parbeam</span>
         </div>
-        <div className="r">
-          {variants?.map((v) => (
-            <a href={v.href} key={v.href}>
-              {v.label}
-            </a>
-          ))}
-          <a href="mailto:hello@parbeam.xyz">hello@parbeam.xyz</a>
-        </div>
+        <nav className="r footlinks">
+          <a href="/onboard">Create your page</a>
+          <a href="/streamers">Streamers</a>
+          <a href="/#how">How it works</a>
+          <a href="/#faq">FAQ</a>
+          <a href="mailto:hello@parbeam.xyz">Contact</a>
+        </nav>
+      </div>
+      <div className="wrap footnote">
+        Built on{" "}
+        <a href="https://stellar.org" rel="noopener" style={{ color: "var(--dim)" }}>
+          Stellar
+        </a>{" "}
+        · Testnet preview
       </div>
     </footer>
   );
