@@ -1,7 +1,7 @@
 const steps = [
   {
     k: "01",
-    title: "Create your creator page",
+    title: "Create your tipping page",
     body: "Connect your Stellar wallet and choose the assets and minimum tip amounts you want to accept.",
   },
   {

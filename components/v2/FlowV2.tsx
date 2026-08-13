@@ -12,7 +12,7 @@ export default function FlowV2() {
         <div className="eyebrow">Under the hood</div>
         <h2>More than a payment page.</h2>
         <p className="sub" style={{ maxWidth: "56ch" }}>
-          Every creator tip follows a verifiable payment flow.
+          Every streamer tip follows a verifiable payment flow.
         </p>
         <div className="flow">
           {nodes.map((n, i) => (

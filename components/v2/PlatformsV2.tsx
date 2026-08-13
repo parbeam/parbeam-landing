@@ -3,7 +3,7 @@ export default function PlatformsV2() {
     <section id="platforms">
       <div className="wrap center">
         <div className="eyebrow">Fits your setup</div>
-        <h2>Built for the platforms creators already use.</h2>
+        <h2>Built for the platforms streamers already use.</h2>
         <p className="sub">
           Parbeam is not another streaming platform. It is a payment layer that brings Stellar into existing
           live-streaming workflows.

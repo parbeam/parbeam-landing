@@ -5,8 +5,8 @@ export default function StellarV2() {
         <div className="eyebrow">Built on Stellar</div>
         <h2>Fast settlement, low cost, made for tipping.</h2>
         <p className="sub" style={{ maxWidth: "60ch" }}>
-          Fast settlement and low transaction costs make Stellar well suited for frequent digital payments and creator
-          tipping. Creators receive XLM and supported Stellar assets directly through their own wallets.
+          Fast settlement and low transaction costs make Stellar well suited for frequent digital payments and streamer
+          tipping. Streamers receive XLM and supported Stellar assets directly through their own wallets.
         </p>
         <div className="band" style={{ marginTop: 44 }}>
           <div>
@@ -19,7 +19,7 @@ export default function StellarV2() {
           </div>
           <div>
             <b>Self-custody</b>
-            <span>funds arrive in the creator&apos;s own wallet</span>
+            <span>funds arrive in the streamer&apos;s own wallet</span>
           </div>
         </div>
       </div>
