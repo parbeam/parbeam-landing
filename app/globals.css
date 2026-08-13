@@ -153,6 +153,40 @@ footer{border-top:1px solid var(--line);padding:44px 0}
 .foot-grid a:hover{color:var(--ink)}
 .foot-grid .r{display:flex;gap:22px}
 
+/* ---- production footer + nav additions ---- */
+.footlinks{display:flex;gap:22px;flex-wrap:wrap}
+.footlinks a{color:var(--mut)}
+.footlinks a:hover{color:var(--ink)}
+.footnote{color:var(--mut);font-size:13px;margin-top:18px}
+.btn.ghost.light{color:#f5f3ee;border-color:rgba(255,255,255,.25)}
+.btn.ghost.light:hover{border-color:rgba(255,255,255,.5)}
+.ctasub{color:rgba(255,255,255,.72);font-size:16px;max-width:52ch;margin:14px auto 0}
+.ctarow{display:flex;gap:12px;justify-content:center;margin-top:30px;flex-wrap:wrap}
+
+/* ---- centered form pages (onboard, tip) ---- */
+.formpage{display:flex;justify-content:center;padding:56px 20px 90px;min-height:64vh;
+  background:radial-gradient(70% 60% at 50% 0%,rgba(245,158,11,.09),transparent 70%)}
+
+/* ---- generic content page (streamers) ---- */
+.pagewrap{max-width:1000px;margin:0 auto;padding:48px 24px 90px}
+.pagehead{margin-bottom:40px}
+.pagehead h1{font-size:34px;font-weight:750;letter-spacing:-.03em;margin:6px 0 4px}
+.emptybox{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:48px 24px;text-align:center;box-shadow:var(--shadow)}
+.emptybox p{color:var(--dim);margin-bottom:18px}
+.streamergrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.streamercard{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);
+  border-radius:14px;padding:16px 18px;box-shadow:var(--shadow);transition:transform .15s,border-color .15s}
+.streamercard:hover{transform:translateY(-2px);border-color:#c9c4b8}
+.streameravatar{width:44px;height:44px;border-radius:50%;flex-shrink:0;color:#fff;font-weight:800;font-size:18px;
+  display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#fcd34d,#f59e0b,#b45309)}
+.streamermeta{min-width:0;flex:1}
+.streamermeta b{display:block;font-size:15.5px;letter-spacing:-.01em}
+.streamermeta span{color:var(--mut);font:500 12.5px var(--mono);display:block;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.streamertip{color:var(--amber-ink);font:600 13px var(--mono);flex-shrink:0}
+
+/* ---- dashboard top ---- */
+.dashtop{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;padding:34px 0 22px;flex-wrap:wrap}
+
 /* ---- MVP: tip page ---- */
 .tipwrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:32px 20px;
   background:radial-gradient(70% 55% at 50% 0%,rgba(245,158,11,.10),transparent 70%),var(--bg)}
