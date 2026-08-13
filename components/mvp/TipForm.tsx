@@ -12,6 +12,7 @@ export default function TipForm({ streamer }: { streamer: Streamer }) {
   const [stage, setStage] = useState<Stage>("idle");
   const [address, setAddress] = useState<string>("");
   const [amount, setAmount] = useState<string>(String(streamer.minXlm));
+  const [name, setName] = useState<string>("");
   const [message, setMessage] = useState<string>("");
   const [txHash, setTxHash] = useState<string>("");
   const [error, setError] = useState<string>("");
@@ -33,6 +34,20 @@ export default function TipForm({ streamer }: { streamer: Streamer }) {
     setError("");
     setStage("signing");
     try {
+      // Store name + full message off-chain, get a short memo ref back.
+      let memoText = message.trim().slice(0, 28);
+      try {
+        const intentRes = await fetch("/api/intents", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ slug: streamer.slug, name, message, amount: Number(amount) }),
+        });
+        const intent = await intentRes.json();
+        if (intentRes.ok && intent.ref) memoText = intent.ref;
+      } catch {
+        // if the intent service is down, fall back to a plain text memo
+      }
+
       const sdk = await import("@stellar/stellar-sdk");
       const { Horizon, TransactionBuilder, Operation, Asset, Memo, BASE_FEE, Networks } = sdk;
       const server = new Horizon.Server("https://horizon-testnet.stellar.org");
@@ -51,8 +66,7 @@ export default function TipForm({ streamer }: { streamer: Streamer }) {
         )
         .setTimeout(180);
 
-      const memo = message.trim().slice(0, 28);
-      if (memo) builder.addMemo(Memo.text(memo));
+      if (memoText) builder.addMemo(Memo.text(memoText));
       const tx = builder.build();
 
       const signedTxXdr = await signTransactionXdr(tx.toXDR(), address);
@@ -117,11 +131,22 @@ export default function TipForm({ streamer }: { streamer: Streamer }) {
       {belowMin && <p className="warn">Minimum is {streamer.minXlm} XLM.</p>}
 
       <label className="fld">
-        <span>Message (shown on stream, up to 28 chars)</span>
+        <span>Your name (shown on stream)</span>
         <input
           type="text"
-          maxLength={28}
-          placeholder="gg from Istanbul"
+          maxLength={40}
+          placeholder="luna"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+      </label>
+
+      <label className="fld">
+        <span>Message (shown on stream)</span>
+        <input
+          type="text"
+          maxLength={200}
+          placeholder="gg from Istanbul, keep it up!"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
         />

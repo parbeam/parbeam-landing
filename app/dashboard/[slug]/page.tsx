@@ -1,11 +1,13 @@
 import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import { getStreamer } from "@/lib/registry";
-import { recentTips, EXPLORER_TX, EXPLORER_ACCT } from "@/lib/stellar";
+import { recentTips, EXPLORER_TX, EXPLORER_ACCT, type Tip } from "@/lib/stellar";
+import { enrichTips } from "@/lib/intents";
 import { Logo } from "@/components/icons";
 import CopyField from "@/components/mvp/CopyField";
 
 export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
 
 export default async function Dashboard({ params }: { params: { slug: string } }) {
   const streamer = await getStreamer(params.slug);
@@ -16,10 +18,10 @@ export default async function Dashboard({ params }: { params: { slug: string } }
   const proto = h.get("x-forwarded-proto") || "https";
   const base = `${proto}://${host}`;
 
-  let tips: Awaited<ReturnType<typeof recentTips>> = [];
+  let tips: (Tip & { name?: string; message: string })[] = [];
   let tipError = "";
   try {
-    tips = await recentTips(streamer.address, 15);
+    tips = await enrichTips(await recentTips(streamer.address, 15));
   } catch {
     tipError = "Could not load tips from Stellar right now.";
   }
@@ -101,10 +103,10 @@ export default async function Dashboard({ params }: { params: { slug: string } }
                 <div className="feedcoin">$</div>
                 <div className="feedmain">
                   <div className="feedtop">
-                    <b>{t.from.slice(0, 4)}…{t.from.slice(-4)}</b>
+                    <b>{t.name || `${t.from.slice(0, 4)}…${t.from.slice(-4)}`}</b>
                     <span className="feedamt">{Number(t.amount).toLocaleString()} XLM</span>
                   </div>
-                  {t.memo && <div className="feedmsg">&ldquo;{t.memo}&rdquo;</div>}
+                  {t.message && <div className="feedmsg">&ldquo;{t.message}&rdquo;</div>}
                 </div>
               </a>
             ))}

@@ -3,7 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import type { Tip } from "@/lib/stellar";
 
-type AlertItem = { key: string; from: string; amount: string; memo: string };
+type AlertItem = { key: string; who: string; amount: string; message: string };
+
+const short = (a: string) => `${a.slice(0, 4)}…${a.slice(-4)}`;
 
 export default function Overlay({ slug, test = false }: { slug: string; test?: boolean }) {
   const [alerts, setAlerts] = useState<AlertItem[]>([]);
@@ -18,9 +20,9 @@ export default function Overlay({ slug, test = false }: { slug: string; test?: b
     if (test) {
       const demo: AlertItem = {
         key: "test-alert",
-        from: "GTEST0000000000000000000000000000000000000000000000TEST",
+        who: "Parbeam",
         amount: "25",
-        memo: "test alert 🎉",
+        message: "test alert 🎉",
       };
       setAlerts([demo]);
       setTimeout(() => setAlerts((a) => a.filter((x) => x.key !== demo.key)), 7000);
@@ -38,7 +40,12 @@ export default function Overlay({ slug, test = false }: { slug: string; test?: b
         for (const t of tips) {
           if (seen.current.has(t.txHash)) continue;
           seen.current.add(t.txHash);
-          const item: AlertItem = { key: t.txHash, from: t.from, amount: t.amount, memo: t.memo };
+          const item: AlertItem = {
+            key: t.txHash,
+            who: t.name || short(t.from),
+            amount: t.amount,
+            message: t.message ?? t.memo ?? "",
+          };
           setAlerts((a) => [...a, item]);
           setTimeout(() => {
             setAlerts((a) => a.filter((x) => x.key !== item.key));
@@ -62,12 +69,10 @@ export default function Overlay({ slug, test = false }: { slug: string; test?: b
           <div className="ov-coin">$</div>
           <div className="ov-body">
             <div className="ov-line">
-              <b>
-                {a.from.slice(0, 4)}…{a.from.slice(-4)}
-              </b>{" "}
-              tipped <span className="ov-amt">{Number(a.amount).toLocaleString()} XLM</span>
+              <b>{a.who}</b> tipped{" "}
+              <span className="ov-amt">{Number(a.amount).toLocaleString()} XLM</span>
             </div>
-            {a.memo && <div className="ov-msg">&ldquo;{a.memo}&rdquo;</div>}
+            {a.message && <div className="ov-msg">&ldquo;{a.message}&rdquo;</div>}
           </div>
         </div>
       ))}

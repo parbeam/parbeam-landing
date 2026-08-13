@@ -18,6 +18,9 @@ export type Tip = {
   amount: string;
   memo: string;
   createdAt: string;
+  // filled in by intent enrichment
+  name?: string;
+  message?: string;
 };
 
 async function toTip(r: any): Promise<Tip> {

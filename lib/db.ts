@@ -43,6 +43,14 @@ create table if not exists streamers (
   owner_address text not null,
   created_at    timestamptz not null default now()
 );
+create table if not exists intents (
+  ref         text primary key,
+  slug        text not null,
+  name        text not null default '',
+  message     text not null default '',
+  amount      numeric not null default 0,
+  created_at  timestamptz not null default now()
+);
 `;
 
 // Idempotent: creates the table on first use and seeds the demo streamer,
