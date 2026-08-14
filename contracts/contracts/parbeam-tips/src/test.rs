@@ -37,13 +37,14 @@ fn escrow_then_bind_then_claim() {
     let handle = String::from_str(&f.env, "my-stream");
 
     // tip to an unbound handle -> escrowed in the contract
-    f.client.tip(&viewer, &handle, &100);
+    let r = String::from_str(&f.env, "pb_ref1");
+    f.client.tip(&viewer, &handle, &100, &r);
     assert_eq!(f.client.balance(&handle), 100);
     assert_eq!(f.token.balance(&viewer), 900);
     assert_eq!(f.client.payout(&handle), None);
 
     // a second tip accumulates
-    f.client.tip(&viewer, &handle, &50);
+    f.client.tip(&viewer, &handle, &50, &r);
     assert_eq!(f.client.balance(&handle), 150);
 
     // admin binds the handle to the streamer wallet (after off-chain proof)
@@ -66,7 +67,7 @@ fn bound_handle_routes_direct() {
     let handle = String::from_str(&f.env, "live");
 
     f.client.set_payout(&handle, &streamer);
-    f.client.tip(&viewer, &handle, &200);
+    f.client.tip(&viewer, &handle, &200, &String::from_str(&f.env, "pb_ref2"));
 
     // routed straight through: nothing held by the contract
     assert_eq!(f.client.balance(&handle), 0);
@@ -108,6 +109,6 @@ fn zero_tip_is_rejected() {
     let f = setup();
     let viewer = Address::generate(&f.env);
     f.token_admin.mint(&viewer, &10);
-    let res = f.client.try_tip(&viewer, &String::from_str(&f.env, "h"), &0);
+    let res = f.client.try_tip(&viewer, &String::from_str(&f.env, "h"), &0, &String::from_str(&f.env, "x"));
     assert_eq!(res, Err(Ok(Error::AmountTooLow)));
 }

@@ -37,12 +37,14 @@ const KEEP_TTL: u32 = 518_400; // ~30 days
 
 /// A tip landed for a handle. `direct` = routed straight to the streamer;
 /// otherwise it was escrowed until the streamer binds their wallet.
+/// `reference` links to the off-chain donor name + message (empty if none).
 #[contractevent(topics = ["tip"])]
 pub struct TipEvent {
     pub from: Address,
     pub handle: String,
     pub amount: i128,
     pub direct: bool,
+    pub reference: String,
 }
 
 /// An escrowed balance was released to the streamer's wallet.
@@ -66,8 +68,15 @@ impl ParbeamTips {
     }
 
     /// Tip a streamer by handle. Routes straight to the streamer if bound,
-    /// otherwise escrows in the contract.
-    pub fn tip(env: Env, from: Address, handle: String, amount: i128) -> Result<(), Error> {
+    /// otherwise escrows in the contract. `reference` is an opaque id that
+    /// links the tip to its off-chain donor name + message.
+    pub fn tip(
+        env: Env,
+        from: Address,
+        handle: String,
+        amount: i128,
+        reference: String,
+    ) -> Result<(), Error> {
         from.require_auth();
         if amount <= 0 {
             return Err(Error::AmountTooLow);
@@ -77,7 +86,7 @@ impl ParbeamTips {
         match Self::payout(env.clone(), handle.clone()) {
             Some(wallet) => {
                 client.transfer(&from, &wallet, &amount);
-                TipEvent { from, handle, amount, direct: true }.publish(&env);
+                TipEvent { from, handle, amount, direct: true, reference }.publish(&env);
             }
             None => {
                 client.transfer(&from, &env.current_contract_address(), &amount);
@@ -87,7 +96,7 @@ impl ParbeamTips {
                 let key = DataKey::Balance(handle.clone());
                 env.storage().persistent().set(&key, &bal);
                 env.storage().persistent().extend_ttl(&key, DAY_TTL, KEEP_TTL);
-                TipEvent { from, handle, amount, direct: false }.publish(&env);
+                TipEvent { from, handle, amount, direct: false, reference }.publish(&env);
             }
         }
         Ok(())

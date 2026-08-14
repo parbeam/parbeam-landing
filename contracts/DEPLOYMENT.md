@@ -8,21 +8,31 @@ wallet can withdraw a handle's balance, and a handle can be bound only once.
 
 ## Testnet
 
-- Contract ID: `CBSXW5GK63I52OBERMKMF4L7ITRM5LD2HDEU7N2L3K3NFUSB4EO4NFX3`
+- Contract ID: `CDQNO23SKH65GLUV47X326PLHSY3JHJDDYY4PHPYMOOR3I672KV5QK37`
 - Token (native XLM SAC): `CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC`
-- Admin / attestor: `parbeam-deployer` (binds handle → wallet after off-chain channel-ownership proof)
+- Admin / attestor: `parbeam-attestor` (binds handle → wallet after off-chain channel-ownership proof; the app signs `set_payout` with `STELLAR_ATTESTOR_SECRET`)
 - Network: Test SDF Network ; September 2015
 
 Verified live end to end: escrow (tip to unbound handle) → bind (set_payout) →
 claim, plus direct routing (tip to a bound handle goes straight to the wallet).
 
+## App integration
+
+The web app talks to this contract directly:
+- Tip page invokes `tip` (viewer signs with their wallet, via Soroban RPC simulate + assemble).
+- Onboarding binds the streamer's handle with `set_payout` (server-side, attestor key).
+- Overlay and dashboard read `TipEvent`s via RPC `getEvents` (no Horizon).
+- Donor name + message are stored off-chain, keyed by the tip's `reference`.
+
+App env vars: `NEXT_PUBLIC_CONTRACT_ID` (defaults to the id above), `STELLAR_ATTESTOR_SECRET` (required for on-chain binding at onboarding).
+
 ## Interface
 
-- `tip(from, handle, amount)` — viewer authorizes; routes to the bound wallet or escrows.
+- `tip(from, handle, amount, reference)` — viewer authorizes; routes to the bound wallet or escrows.
 - `set_payout(handle, wallet)` — admin binds a handle once (immutable); moves no funds.
 - `claim(handle)` — bound wallet withdraws its escrowed balance.
 - `balance(handle) -> i128`, `payout(handle) -> Option<Address>` — views.
-- Events: `TipEvent { from, handle, amount, direct }`, `ClaimEvent { handle, wallet, amount }`.
+- Events: `TipEvent { from, handle, amount, direct, reference }`, `ClaimEvent { handle, wallet, amount }`.
 
 ## Build / test / deploy
 
