@@ -3,10 +3,11 @@
 import { useState } from "react";
 import type { Streamer } from "@/lib/registry";
 import { connectWallet, signTransactionXdr } from "@/lib/kit";
+import { CONTRACT_ID, RPC_URL, NETWORK_PASSPHRASE, toStroops, EXPLORER_TX } from "@/lib/contract";
 
 type Stage = "idle" | "connecting" | "ready" | "signing" | "done" | "error";
 
-const EXPLORER_TX = (h: string) => `https://stellar.expert/explorer/testnet/tx/${h}`;
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export default function TipForm({ streamer }: { streamer: Streamer }) {
   const [stage, setStage] = useState<Stage>("idle");
@@ -34,8 +35,9 @@ export default function TipForm({ streamer }: { streamer: Streamer }) {
     setError("");
     setStage("signing");
     try {
-      // Store name + full message off-chain, get a short memo ref back.
-      let memoText = message.trim().slice(0, 28);
+      // Store donor name + message off-chain, keyed by a short reference that
+      // the contract carries in its tip event.
+      let ref = "";
       try {
         const intentRes = await fetch("/api/intents", {
           method: "POST",
@@ -43,40 +45,56 @@ export default function TipForm({ streamer }: { streamer: Streamer }) {
           body: JSON.stringify({ slug: streamer.slug, name, message, amount: Number(amount) }),
         });
         const intent = await intentRes.json();
-        if (intentRes.ok && intent.ref) memoText = intent.ref;
+        if (intentRes.ok && intent.ref) ref = intent.ref;
       } catch {
-        // if the intent service is down, fall back to a plain text memo
+        // proceed without off-chain name/message if the service is down
       }
 
       const sdk = await import("@stellar/stellar-sdk");
-      const { Horizon, TransactionBuilder, Operation, Asset, Memo, BASE_FEE, Networks } = sdk;
-      const server = new Horizon.Server("https://horizon-testnet.stellar.org");
+      const { rpc, Contract, Address, TransactionBuilder, nativeToScVal, BASE_FEE } = sdk;
+      const server = new rpc.Server(RPC_URL);
 
-      const source = await server.loadAccount(address);
-      const builder = new TransactionBuilder(source, {
+      const account = await server.getAccount(address);
+      const contract = new Contract(CONTRACT_ID);
+      const op = contract.call(
+        "tip",
+        Address.fromString(address).toScVal(),
+        nativeToScVal(streamer.slug, { type: "string" }),
+        nativeToScVal(toStroops(amount), { type: "i128" }),
+        nativeToScVal(ref, { type: "string" })
+      );
+
+      const built = new TransactionBuilder(account, {
         fee: BASE_FEE,
-        networkPassphrase: Networks.TESTNET,
+        networkPassphrase: NETWORK_PASSPHRASE,
       })
-        .addOperation(
-          Operation.payment({
-            destination: streamer.address,
-            asset: Asset.native(),
-            amount: String(amount),
-          })
-        )
-        .setTimeout(180);
+        .addOperation(op)
+        .setTimeout(120)
+        .build();
 
-      if (memoText) builder.addMemo(Memo.text(memoText));
-      const tx = builder.build();
+      const sim = await server.simulateTransaction(built);
+      if (rpc.Api.isSimulationError(sim)) throw new Error(sim.error);
+      const prepared = rpc.assembleTransaction(built, sim).build();
 
-      const signedTxXdr = await signTransactionXdr(tx.toXDR(), address);
-      const signed = TransactionBuilder.fromXDR(signedTxXdr, Networks.TESTNET);
-      const res: any = await server.submitTransaction(signed as any);
-      setTxHash(res.hash);
+      const signedXdr = await signTransactionXdr(prepared.toXDR(), address);
+      const sent = await server.sendTransaction(
+        TransactionBuilder.fromXDR(signedXdr, NETWORK_PASSPHRASE)
+      );
+      if (sent.status === "ERROR") throw new Error("The network rejected the transaction.");
+
+      let result = await server.getTransaction(sent.hash);
+      for (let i = 0; i < 15 && result.status === "NOT_FOUND"; i++) {
+        await sleep(1000);
+        result = await server.getTransaction(sent.hash);
+      }
+      if (result.status !== "SUCCESS") {
+        throw new Error("The tip did not confirm. Please try again.");
+      }
+
+      setTxHash(sent.hash);
       setStage("done");
     } catch (e: any) {
-      const codes = e?.response?.data?.extras?.result_codes;
-      setError(codes ? JSON.stringify(codes) : e?.message || "Transaction failed");
+      setError(e?.message || "Transaction failed");
       setStage("error");
     }
   }
