@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { StrKey } from "@stellar/stellar-sdk";
 import { createStreamer, getStreamer, normalizeSlug, slugError, slugTaken } from "@/lib/registry";
+import { bindHandle } from "@/lib/attestor";
 
 export const dynamic = "force-dynamic";
 
@@ -40,6 +41,13 @@ export async function POST(req: NextRequest) {
 
   try {
     const s = await createStreamer({ slug, displayName, address, minXlm, ownerAddress: address });
+    // Bind the handle on-chain so tips route straight to the streamer. Best
+    // effort: if it fails, tips simply escrow until the streamer claims.
+    try {
+      await bindHandle(s.slug, address);
+    } catch (bindErr) {
+      console.error("bindHandle failed for", s.slug, bindErr);
+    }
     return NextResponse.json({ ok: true, slug: s.slug });
   } catch (e: any) {
     if (String(e?.message || "").includes("duplicate")) {
