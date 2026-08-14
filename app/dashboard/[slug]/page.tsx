@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import { getStreamer } from "@/lib/registry";
-import { recentTips, EXPLORER_TX, EXPLORER_ACCT, type Tip } from "@/lib/stellar";
+import { EXPLORER_TX, EXPLORER_ACCT } from "@/lib/stellar";
+import { recentContractTips, type ContractTip } from "@/lib/events";
 import { enrichTips } from "@/lib/intents";
 import AppNav from "@/components/AppNav";
 import Footer from "@/components/Footer";
@@ -19,10 +20,10 @@ export default async function Dashboard({ params }: { params: { slug: string } }
   const proto = h.get("x-forwarded-proto") || "https";
   const base = `${proto}://${host}`;
 
-  let tips: (Tip & { name?: string; message: string })[] = [];
+  let tips: (ContractTip & { name?: string; message: string })[] = [];
   let tipError = "";
   try {
-    tips = await enrichTips(await recentTips(streamer.address, 15));
+    tips = await enrichTips(await recentContractTips(streamer.slug));
   } catch {
     tipError = "Could not load tips from Stellar right now.";
   }
